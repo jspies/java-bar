@@ -24,8 +24,11 @@ var Server = mongo.Server,
  
 var server = new Server('localhost', 27017, {auto_reconnect: true});
 db = new Db('javabar_development', server);
+
+var mongoUri = process.env.MONGOHQ_URL || 
+  'mongodb://localhost/javabar_development'; 
  
-db.open(function(err, db) {
+mongo.Db.connect(mongoUri, function(err, db) {
   if(!err) {
     console.log("Connected to 'javabar' database");
 
@@ -33,7 +36,7 @@ db.open(function(err, db) {
       if (err) {
         console.log("The 'packages' collection doesn't exist. Creating it.");
       } else {
-        collection.remove();
+        //collection.remove(function() {});
       }
     });
   }
