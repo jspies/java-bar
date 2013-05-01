@@ -17,18 +17,26 @@ var http = require('http');
 var https = require('https');
 var async = require('async');
 var uglify = require("uglify-js");
+var url = require('url');
+
+var connectionUri;
+var dbName;
+ 
+if (process.env.MONGOHQ_URL) {
+  connectionUri = url.parse(process.env.MONGOHQ_URL);
+} else {
+  connectionUri = url.parse("mongodb://localhost:27017/javabar_development");
+}
+dbName = connectionUri.pathname.replace(/^\//, '');
 
 var Server = mongo.Server,
     Db = mongo.Db,
     BSON = mongo.BSONPure;
  
-var server = new Server('localhost', 27017, {auto_reconnect: true});
-db = new Db('javabar_development', server);
-
-var mongoUri = process.env.MONGOHQ_URL || 
-  'mongodb://localhost/javabar_development'; 
+var server = new Server(connectionUri.hostname, connectionUri.port, {auto_reconnect: true});
+db = new Db(dbName, server);
  
-mongo.Db.connect(mongoUri, function(err, db) {
+db.open(function(err, db) {
   if(!err) {
     console.log("Connected to 'javabar' database");
 
@@ -39,6 +47,8 @@ mongo.Db.connect(mongoUri, function(err, db) {
         //collection.remove(function() {});
       }
     });
+  } else {
+    throw err;
   }
 });
 
