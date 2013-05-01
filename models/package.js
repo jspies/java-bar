@@ -20,11 +20,7 @@ var async = require('async');
 var uglify = require("uglify-js");
  
 var connectionUri = process.env.MONGOHQ_URL || "mongodb://localhost:27017/javabar_development";
-
 var db;
-
-console.log("*******************");
-console.log(connectionUri);
 
 mongo.connect(connectionUri, {}, function(err, database) {
   db = database;
@@ -35,7 +31,7 @@ mongo.connect(connectionUri, {}, function(err, database) {
       if (err) {
         console.log(err);
       } else {
-        //collection.remove(function() {});
+        console.log("here i am");
       }
     });
   } else {
