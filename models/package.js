@@ -31,7 +31,7 @@ mongo.connect(connectionUri, {}, function(err, database) {
   if(!err) {
     console.log("Connected to 'javabar' database");
 
-    db.collection('packages', {strict:true}, function(err, collection) {
+    db.collection('packages', {}, function(err, collection) {
       if (err) {
         console.log(err);
       } else {
