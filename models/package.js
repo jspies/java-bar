@@ -22,7 +22,7 @@ var uglify = require("uglify-js");
 var connectionUri = process.env.MONGOHQ_URL || "mongodb://localhost:27017/javabar_development";
 var db;
 
-mongo.connect(connectionUri, {}, function(err, database) {
+mongo.Db.connect(connectionUri, function(err, database) {
   if(!err) {
     db = database;
     console.log("Connected to 'javabar' database");
