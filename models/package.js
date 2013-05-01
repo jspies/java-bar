@@ -23,6 +23,7 @@ var connectionUri;
 var dbName;
  
 if (process.env.MONGOHQ_URL) {
+  console.log(process.env.MONGOHQ_URL)
   connectionUri = url.parse(process.env.MONGOHQ_URL);
 } else {
   connectionUri = url.parse("mongodb://localhost:27017/javabar_development");
