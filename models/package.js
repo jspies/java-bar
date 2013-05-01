@@ -13,46 +13,29 @@ AVAILABLE_LIBS = {
 }
 
 var mongo = require('mongodb');
+var connect = require('connect');
 var http = require('http');
 var https = require('https');
 var async = require('async');
 var uglify = require("uglify-js");
-var url = require('url');
+ 
+var connectionUri = process.env.MONGOHQ_URL || "mongodb://localhost:27017/javabar_development";
 
-var connectionUri;
-var dbName;
- 
-if (process.env.MONGOHQ_URL) {
-  console.log(process.env.MONGOHQ_URL)
-  connectionUri = url.parse(process.env.MONGOHQ_URL);
-} else {
-  connectionUri = url.parse("mongodb://localhost:27017/javabar_development");
-}
-dbName = connectionUri.pathname.replace(/^\//, '');
+var db;
 
-var Server = mongo.Server,
-    Db = mongo.Db,
-    BSON = mongo.BSONPure;
- 
-var server = new Server(connectionUri.hostname, connectionUri.port, {auto_reconnect: true});
-db = new Db(dbName, server);
- 
-db.open(function(err, db) {
+mongo.connect(connectionUri, {}, function(err, database) {
+  db = database;
   if(!err) {
     console.log("Connected to 'javabar' database");
 
-    db.authenticate(connectionUri.auth.split(':')[0], connectionUri.auth.split(':')[1], {}, function(err, success) {
-      if (err) throw err;
-
-      db.collection('packages', {strict:true}, function(err, collection) {
-        if (err) {
-          console.log("The 'packages' collection doesn't exist. Creating it.");
-          throw err;
-        } else {
-          //collection.remove(function() {});
-        }
-      });
-    })
+    db.collection('packages', {strict:true}, function(err, collection) {
+      if (err) {
+        console.log("The 'packages' collection doesn't exist. Creating it.");
+        throw err;
+      } else {
+        //collection.remove(function() {});
+      }
+    });
   } else {
     throw err;
   }

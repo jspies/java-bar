@@ -10,6 +10,7 @@
     "mocha": "1.9.0",
     "express": "3.x",
     "async": "*",
-    "uglify-js": "*"
+    "uglify-js": "*",
+    "connect": "*"
   }
 }
