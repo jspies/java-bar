@@ -23,17 +23,9 @@ var connectionUri = process.env.MONGOHQ_URL || "mongodb://localhost:27017/javaba
 var db;
 
 mongo.connect(connectionUri, {}, function(err, database) {
-  db = database;
   if(!err) {
+    db = database;
     console.log("Connected to 'javabar' database");
-
-    db.collection('packages', {}, function(err, collection) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("here i am");
-      }
-    });
   } else {
     throw err;
   }
