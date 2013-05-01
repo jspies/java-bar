@@ -16,6 +16,7 @@ var mongo = require('mongodb');
 var http = require('http');
 var https = require('https');
 var async = require('async');
+var uglify = require("uglify-js");
 
 var Server = mongo.Server,
     Db = mongo.Db,
@@ -50,8 +51,9 @@ Package.findByHash = function(hash, callback) {
 
 Package.create = function(options, callback) {
   // build the js!
-  this.construct(options.libraries, function(constructed_string) {
+  this.construct(options.libraries, function(constructed_string, minified_string) {
     options.constructed_string = constructed_string;
+    options.minified_string = minified_string;
     db.collection('packages', function(err, collection) {
       collection.insert(options, function(err, item) {
         callback(item[0]);
@@ -66,29 +68,40 @@ Package.construct = function(libs, callback) {
   while( i < libs.length) {
     if (AVAILABLE_LIBS[libs[i]]) {
       methods.push(AVAILABLE_LIBS[libs[i]]);
+    } else {
+      methods.push({"error": "We do not know about " + libs[i]})
     }
     i++;
   }
 
   async.mapSeries(methods, this.fetch, function(err, results) {
-    callback(results.join(""));
+
+    var orig_code = results.join("");
+    var final_code = uglify.minify(orig_code, {fromString: true}).code;
+
+    callback(orig_code, final_code);
   })
 };
 
 Package.fetch = function(options, callback) {
   var constructed_string = "";
-  var serv = https;
-  if (options.port == 80) {
-    serv = http;
-  }
-  serv.get(options, function(response) {
-    response.setEncoding('utf8');
-    response.on('data', function(data) {
-      constructed_string += data;
-    }).on('end', function() {
-      callback(null, constructed_string);
+  if (options.error) {
+    callback(null, "alert('"+ options.error +"');\n")
+  } else {
+    var serv = https;
+    if (options.port == 80) {
+      serv = http;
+    }
+    serv.get(options, function(response) {
+      response.setEncoding('utf8');
+      response.on('data', function(data) {
+        constructed_string += data;
+      }).on('end', function() {
+        callback(null, constructed_string);
+      });
     });
-  });
+  }
+  
 }
 
 

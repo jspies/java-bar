@@ -6,13 +6,17 @@ var Path = require('./models/path');
 
 var port = 3000;
 
+app.get("/all", function(request, response) {
+  response.send("View All Known Libs");
+});
+
 app.use(function(request, response) {
   var path = new Path(request.path);
 
   response.setHeader('Content-Type', 'text/plain');
 
   path.package(function(pack) {
-    response.send(pack.constructed_string);
+    response.send(pack.minified_string);
   });
 });
 
