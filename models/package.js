@@ -44,8 +44,8 @@ db.open(function(err, db) {
     db.collection('packages', {strict:true}, function(err, collection) {
       if (err) {
         console.log("The 'packages' collection doesn't exist. Creating it.");
-      } else {
         throw err;
+      } else {
         //collection.remove(function() {});
       }
     });
