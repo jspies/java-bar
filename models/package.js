@@ -41,14 +41,18 @@ db.open(function(err, db) {
   if(!err) {
     console.log("Connected to 'javabar' database");
 
-    db.collection('packages', {strict:true}, function(err, collection) {
-      if (err) {
-        console.log("The 'packages' collection doesn't exist. Creating it.");
-        throw err;
-      } else {
-        //collection.remove(function() {});
-      }
-    });
+    db.authenticate(connectionUri.auth.split(':')[0], connectionUri.auth.split(':')[1], {}, function(err, success) {
+      if (err) throw err;
+
+      db.collection('packages', {strict:true}, function(err, collection) {
+        if (err) {
+          console.log("The 'packages' collection doesn't exist. Creating it.");
+          throw err;
+        } else {
+          //collection.remove(function() {});
+        }
+      });
+    })
   } else {
     throw err;
   }
