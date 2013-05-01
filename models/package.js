@@ -31,7 +31,6 @@ mongo.connect(connectionUri, {}, function(err, database) {
     db.collection('packages', {strict:true}, function(err, collection) {
       if (err) {
         console.log("The 'packages' collection doesn't exist. Creating it.");
-        throw err;
       } else {
         //collection.remove(function() {});
       }
