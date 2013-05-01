@@ -28,13 +28,12 @@ console.log(connectionUri);
 
 mongo.connect(connectionUri, {}, function(err, database) {
   db = database;
-  console.log(db)
   if(!err) {
     console.log("Connected to 'javabar' database");
 
     db.collection('packages', {strict:true}, function(err, collection) {
       if (err) {
-        console.log("The 'packages' collection doesn't exist. Creating it.");
+        console.log(err);
       } else {
         //collection.remove(function() {});
       }
