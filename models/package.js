@@ -27,7 +27,7 @@ mongo.Db.connect(connectionUri, function(err, database) {
     db = database;
     console.log("Connected to 'javabar' database");
     db.collection('packages', function(er, collection) {
-      collection.insert({'name': 'steve'});
+      collection.insert({'name': 'steve'}, {"safe": true}, function(err, item) {});
     })
   }
 });
