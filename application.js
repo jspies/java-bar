@@ -4,7 +4,7 @@ var app = express();
 var Package = require('./models/package');
 var Path = require('./models/path');
 
-var port = 3000;
+var port = process.env.PORT || 3000;
 
 app.get("/all", function(request, response) {
   response.send("View All Known Libs");
