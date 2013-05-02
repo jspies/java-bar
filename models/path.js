@@ -24,7 +24,7 @@ Path.prototype.package = function(callback) {
   var self = this;
   Package.findByHash(this.hash, function(pack) {
     if (!pack) {
-      Package.create({hash: self.hash, libraries: self.libraries}, callback);
+      Package.createWithBuild({hash: self.hash, libraries: self.libraries}, callback);
     } else {
       callback(pack);
     }

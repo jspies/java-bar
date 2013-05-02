@@ -12,45 +12,33 @@ AVAILABLE_LIBS = {
   }
 }
 
-var mongo = require('mongodb');
-var connect = require('connect');
+var Monglow = require('monglow');
+console.log("Monglow: ", Monglow);
 var http = require('http');
 var https = require('https');
 var async = require('async');
 var uglify = require("uglify-js");
  
 var connectionUri = process.env.MONGOHQ_URL || "mongodb://localhost:27017/javabar_development";
-var db;
 
-mongo.Db.connect(connectionUri, function(err, database) {
-  if(!err) {
-    db = database;
-    console.log("Connected to 'javabar' database");
-    db.collection('packages', function(er, collection) {
-      collection.insert({'name': 'steve'}, {"safe": true}, function(err, item) {});
-    })
-  }
-});
+Monglow.connect(connectionUri);
 
-var Package = function() {}
+var Package = Monglow.model('packages');
  
 Package.findByHash = function(hash, callback) {
-  db.collection('packages', function(err, collection) {
-    collection.findOne({'hash': hash}, function(err, item) {
-      callback(item);
-    });
+  this.find({'hash': hash}, function(err, packages) {
+    callback(packages[0] || null);
   });
 };
 
-Package.create = function(options, callback) {
+Package.createWithBuild = function(options, callback) {
   // build the js!
+  var self = this;
   this.construct(options.libraries, function(constructed_string, minified_string) {
     options.constructed_string = constructed_string;
     options.minified_string = minified_string;
-    db.collection('packages', function(err, collection) {
-      collection.insert(options, function(err, item) {
-        callback(item[0]);
-      });
+    this.create(options, function(err, item) {
+      callback(item[0]);
     });
   });
 };
