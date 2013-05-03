@@ -1,9 +1,14 @@
-// Package model
+var Monglow = require('monglow');
+var Library = require('./library');
+
 AVAILABLE_LIBS = {
   "jquery": {
+    "name": "jquery",
+    "url" : "http://code.jquery.com/jquery-2.0.0.js",
     "host": "code.jquery.com",
     "port": 80,
-    "path": "/jquery-2.0.0.js"
+    "path": "/jquery-2.0.0.js",
+    "version": "2.0.0"
   },
   "moment": {
     "host": "raw.github.com",
@@ -12,15 +17,12 @@ AVAILABLE_LIBS = {
   }
 }
 
-var Monglow = require('monglow');
-console.log("Monglow: ", Monglow);
 var http = require('http');
 var https = require('https');
 var async = require('async');
 var uglify = require("uglify-js");
  
 var connectionUri = process.env.MONGOHQ_URL || "mongodb://localhost:27017/javabar_development";
-
 Monglow.connect(connectionUri);
 
 var Package = Monglow.model('packages');
@@ -69,21 +71,18 @@ Package.fetch = function(options, callback) {
   if (options.error) {
     callback(null, "alert('"+ options.error +"');\n")
   } else {
-    var serv = https;
-    if (options.port == 80) {
-      serv = http;
-    }
-    serv.get(options, function(response) {
-      response.setEncoding('utf8');
-      response.on('data', function(data) {
-        constructed_string += data;
-      }).on('end', function() {
-        callback(null, constructed_string);
-      });
+    var versions = {}
+    versions[options.version] = {url: options.url};
+    var lib = new Library({
+      name: options.name,
+      versions: versions
+    })
+
+    lib.fetch(function(err, string) {
+      lib.versions[options.version].constructed_string = string;
+      lib.save(function() {})
     });
   }
-  
 }
-
 
 module.exports = Package;

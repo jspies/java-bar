@@ -3,12 +3,30 @@ var Package = require('./package');
 
 var Path = function(path) {
   this.original_path = path;
+  
+
+  this.explodeLibraries = function() {
+    var strings = [];
+    for(var i=0; i<this.libraries.length;i++) {
+      var details = [this.libraries[i].name];
+      if (this.libraries[i].version) details.push(this.libraries[i].version);
+      strings.push(details.join("-"));
+    }
+    return strings.join("|");
+  }
+
   this.libraries = this.parse();
   this.hash = this.hashIt();
 }
 
 Path.prototype.parse = function() {
-  return this.original_path.replace("/", "").split("+").sort();
+  var libs = this.original_path.replace("/", "").split("+").sort();
+  for(var i=0; i<libs.length;i++) {
+    var splitastic = libs[i].split("-"); // gets version
+    libs[i] = {name: splitastic[0]}
+    if (splitastic[1]) libs[i].version = splitastic[1];
+  }
+  return libs;
 }
 
 Path.prototype.hashIt = function() {
@@ -16,7 +34,7 @@ Path.prototype.hashIt = function() {
     this.parse();
   }
   var hash = crypto.createHash('sha1');
-  hash.update(this.libraries.join("|"));
+  hash.update(this.explodeLibraries());
   return hash.digest('hex');
 }
 
@@ -30,5 +48,7 @@ Path.prototype.package = function(callback) {
     }
   });
 }
+
+
 
 module.exports = Path;

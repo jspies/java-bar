@@ -12,6 +12,7 @@
     "express": "3.x",
     "async": "*",
     "uglify-js": "*",
-    "connect": "*"
+    "connect": "*",
+    "should": "*"
   }
 }
