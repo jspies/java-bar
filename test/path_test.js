@@ -1,4 +1,3 @@
-require('should');
 var crypto = require('crypto');
 
 var Path = require('../models/path');

@@ -1,22 +1,6 @@
 var Monglow = require('monglow');
 var Library = require('./library');
 
-AVAILABLE_LIBS = {
-  "jquery": {
-    "name": "jquery",
-    "url" : "http://code.jquery.com/jquery-2.0.0.js",
-    "host": "code.jquery.com",
-    "port": 80,
-    "path": "/jquery-2.0.0.js",
-    "version": "2.0.0"
-  },
-  "moment": {
-    "host": "raw.github.com",
-    "port": 443,
-    "path": "/timrwood/moment/2.0.0/moment.js"
-  }
-}
-
 var http = require('http');
 var https = require('https');
 var async = require('async');
@@ -48,9 +32,11 @@ Package.createWithBuild = function(options, callback) {
 
 // construct should find persisted Libraries and use them
 Package.construct = function(libs, callback) {
-
+  // libs look like this: [{hash: "Sdgsdf", libraries: [{name: "jquery", version: "2.0.0"}]}]
   var names = [];
+  var libraries_by_name = {};
   for(var i=0;i<libs.length;i++) {
+    libraries_by_name[libs[i].name] = libs[i];
     names.push(libs[i].name);
   }
 
@@ -58,7 +44,15 @@ Package.construct = function(libs, callback) {
     var orig_code = "";
     for(var i=0;i<items.length;i++) {
       // pick the right version
-      orig_code += items[i].versions["2.0.0"].constructed_string;
+
+      if (!libs[items[i].name].version) {
+        // get latest version
+      } else if (items[i].versions[libs[items[i].name].version]) {
+        orig_code += items[i].versions[libs[items[i].name].version].constructed_string;  
+      } else {
+        // we don't have that version
+      }
+      
     }
     
     var final_code = uglify.minify(orig_code, {fromString: true}).code;

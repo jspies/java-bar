@@ -14,7 +14,6 @@ var Path = function(path) {
     return strings.join("|");
   }
 
-  this.libraries = this.parse();
   this.hash = this.hashIt();
 }
 
@@ -30,7 +29,7 @@ Path.prototype.parse = function() {
 
 Path.prototype.hashIt = function() {
   if (!this.libraries) {
-    this.parse();
+    this.libraries = this.parse();
   }
   var hash = crypto.createHash('sha1');
   hash.update(this.explodeLibraries());

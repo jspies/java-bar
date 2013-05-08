@@ -8,11 +8,14 @@
   "dependencies": {
     "mongodb": "1.3.0",
     "monglow": "git://github.com/jspies/monglow.git",
-    "mocha": "1.9.0",
     "express": "3.x",
     "async": "*",
     "uglify-js": "*",
-    "connect": "*",
-    "should": "*"
+    "connect": "*"
+  },
+  "devDependencies":{
+    "mocha": "*",
+    "should": "*",
+    "sinon": "*"
   }
 }
