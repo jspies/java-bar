@@ -4,7 +4,6 @@ var Package = require('./package');
 var Path = function(path) {
   this.original_path = path;
   
-
   this.explodeLibraries = function() {
     var strings = [];
     for(var i=0; i<this.libraries.length;i++) {
@@ -48,7 +47,5 @@ Path.prototype.package = function(callback) {
     }
   });
 }
-
-
 
 module.exports = Path;

@@ -39,50 +39,31 @@ Package.createWithBuild = function(options, callback) {
   this.construct(options.libraries, function(constructed_string, minified_string) {
     options.constructed_string = constructed_string;
     options.minified_string = minified_string;
-    this.create(options, function(err, item) {
-      callback(item[0]);
+    var pack = new Package(options)
+    pack.save(options, function(err, pack) {
+      callback(pack);
     });
   });
 };
 
+// construct should find persisted Libraries and use them
 Package.construct = function(libs, callback) {
-  var i = 0;
-  var methods = [];
-  while( i < libs.length) {
-    if (AVAILABLE_LIBS[libs[i]]) {
-      methods.push(AVAILABLE_LIBS[libs[i]]);
-    } else {
-      methods.push({"error": "We do not know about " + libs[i]})
-    }
-    i++;
+
+  var names = [];
+  for(var i=0;i<libs.length;i++) {
+    names.push(libs[i].name);
   }
 
-  async.mapSeries(methods, this.fetch, function(err, results) {
-
-    var orig_code = results.join("");
+  Library.find({name: {$in: names}}, function(err, items) {
+    var orig_code = "";
+    for(var i=0;i<items.length;i++) {
+      // pick the right version
+      orig_code += items[i].versions["2.0.0"].constructed_string;
+    }
+    
     var final_code = uglify.minify(orig_code, {fromString: true}).code;
-
     callback(orig_code, final_code);
   })
 };
-
-Package.fetch = function(options, callback) {
-  var constructed_string = "";
-  if (options.error) {
-    callback(null, "alert('"+ options.error +"');\n")
-  } else {
-    var versions = {}
-    versions[options.version] = {url: options.url};
-    var lib = new Library({
-      name: options.name,
-      versions: versions
-    })
-
-    lib.fetch(function(err, string) {
-      lib.versions[options.version].constructed_string = string;
-      lib.save(function() {})
-    });
-  }
-}
 
 module.exports = Package;
