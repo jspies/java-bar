@@ -48,8 +48,8 @@ Package.construct = function(libs, callback) {
       // pick the right version
       if (!libs[items[i].name].version) {
         // get latest version
-      } else if (items[i].versions[libs[items[i].name].version]) {
-        orig_code += items[i].versions[libs[items[i].name].version].constructed_string;  
+      } else if (items[i].getVersion(libs[items[i].name].version)) {
+        orig_code += items[i].getVersion(libs[items[i].name].version).constructed_string;  
       } else {
         // we don't have that version
       }

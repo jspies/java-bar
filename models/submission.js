@@ -27,7 +27,6 @@ Submission.prototype.store = function(callback) {
         callback("This already exists! Thanks anyway.");
       } else {
         library.addVersion({version: self.version, url: self.url}, function(err, library) {
-          console.log("i am lost")
           if (err) {
             callback(err);
           } else {

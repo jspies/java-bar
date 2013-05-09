@@ -26,7 +26,7 @@ app.get("/submit", function(request, response) {
 });
 
 app.get("/all", function(request, response) {
-  Library.find(function(err, libs) {
+  Library.find({}, {"versions.constructed_string": 0}, function(err, libs) {
     if (err) { response.send(err);} else {
       response.send(libs);
     }
