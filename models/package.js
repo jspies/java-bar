@@ -40,11 +40,12 @@ Package.construct = function(libs, callback) {
     names.push(libs[i].name);
   }
 
+  libs = libraries_by_name;
+
   Library.find({name: {$in: names}}, function(err, items) {
     var orig_code = "";
     for(var i=0;i<items.length;i++) {
       // pick the right version
-
       if (!libs[items[i].name].version) {
         // get latest version
       } else if (items[i].versions[libs[items[i].name].version]) {

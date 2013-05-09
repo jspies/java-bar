@@ -29,7 +29,6 @@ describe("Path", function() {
   describe("this.hashIt()", function() {
     it("should return a hash from the name string", function(done) {
       var path = new Path("/jquery-2.0.0+moment");
-      console.log(path.explodeLibraries())
       var hash = crypto.createHash('sha1');
       hash.update("jquery-2.0.0|moment");
       path.hashIt().should.equal(hash.digest('hex'));
