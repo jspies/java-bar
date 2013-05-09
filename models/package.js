@@ -48,12 +48,14 @@ Package.construct = function(libs, callback) {
       // pick the right version
       if (!libs[items[i].name].version) {
         // get latest version
+        orig_code += items[i].getLatestVersion().constructed_string;
       } else if (items[i].getVersion(libs[items[i].name].version)) {
         orig_code += items[i].getVersion(libs[items[i].name].version).constructed_string;  
       } else {
         // we don't have that version
-      }
-      
+        callback("Version not found. Leave a version number off for the latest or use /submit to add one.");
+        return;
+      }      
     }
     
     var final_code = uglify.minify(orig_code, {fromString: true}).code;

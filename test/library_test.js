@@ -11,6 +11,18 @@ describe("Library", function() {
 
   });
 
+  describe("this.getLatestVersion", function(done) {
+    it("should return the latest version by sorting", function(done) {
+      var l = new Library({name: "sortable", versions: [
+          {version: "1.2.3", url: "boomhauer"},
+          {version: "2.2.3", url: "hauer"},
+          {version: "1.1.3", url: "boom"}
+        ]});
+      l.getLatestVersion().version.should.equal("2.2.3");
+      done();
+    });
+  });
+
   describe("this.getVersion", function(done) {
     it("should return null if not found", function(done) {
       var l = new Library({name: "backbone"});

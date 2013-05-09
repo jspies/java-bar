@@ -36,6 +36,12 @@ Library.prototype.getVersion = function(version) {
   return null;
 };
 
+Library.prototype.getLatestVersion = function() {
+  return this.versions.sort(function(a, b) {
+    return (a.version < b.version) ? 1 : -1;
+  })[0];
+};
+
 Library.prototype.hasVersion = function(version) {
   if (this.getVersion(version)) return true;
   return false;
