@@ -57,7 +57,6 @@ Library.prototype.addVersion = function(options, callback) {
     this.fetch(options.url, function(err, jsstring) {
       if (err) { callback(err); } else {
         options.constructed_string = jsstring;
-        console.log(options);
 
         self.versions.push(options);
 

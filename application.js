@@ -8,6 +8,12 @@ var Package = require('./models/package')
 
 var port = process.env.PORT || 3000;
 
+app.engine("html", require('ejs').__express);
+
+app.get("/", function(request, response) {
+  response.render("index.html");
+});
+
 app.get("/submit", function(request, response) {
   var submission = new Submission({
     name: request.query.name,
