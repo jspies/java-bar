@@ -20,7 +20,7 @@ Submission.prototype.store = function(callback) {
   if (this.errors.length > 0) {
     callback(this.errors);
   } else {
-    Library.findOne({name: this.name}, function(err, library) {
+    Library.findOne({name: self.name}, function(err, library) {
       if(!library) { library = new Library({name: self.name, versions: []}); }
 
       if (library.hasVersion(self.version)) {
